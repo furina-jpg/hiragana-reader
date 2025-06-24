@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <style>
+    
+    table, tr, td {
+      border: 1px solid black;
+    }
+    
+    td {
+      text-align: center;
+    }
+    
+    button {
+      
+    }
+    
+    #drawboard {
+      display: grid;
+      grid-template-columns: repeat(28, 20px);
+      padding: 20px;
+      width: max-content;
+      background-color: #691607;
+    }
+
+    .cell {
+      border: 1px solid black;
+      width: 20px;
+      height: 20px;
+      text-align: center;
+      margin: 0px;
+      background-color: white;
+      color: white;
+      text-align: right;
+    }
+
+    .colored {
+      background-color: black;
+    }
+  </style>
+</head>
+<body>
+  <table id='ui'>
+    <tr>
+      <td rowspan=2>
+        <div id='drawboard'></div>
+      </td>
+      <td id='textdisplay'>
+        Hello.<br>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <button id='clear'>Clear</button>
+        <button id='submit'>Submit</button>
+      </td>    
+      </tr>
+  </table>
+</body>
+  <script>
+
+// create the drawing board & give it functionality
+var sidelength = 28;
+var drawboard = document.getElementById('drawboard');
+var isDragging = false;
+drawboard.addEventListener('mousedown', function(){
+  isDragging = true;
+});
+drawboard.addEventListener('mouseup', function(){
+  isDragging = false;
+});
+for(var i = 0; i < sidelength*sidelength; i++){
+  var cell = document.createElement('span');
+    
+  // classification
+  cell.classList.add('cell');
+  cell.id = 'cell' + i;
+    
+  // make it work smoothly
+  cell.addEventListener('mouseover', function(){
+    if(isDragging){
+    this.classList.add('colored');
+  }});
+    cell.addEventListener('click', function(){
+    this.classList.add('colored');
+  });
+    
+  // add to board
+  drawboard.appendChild(cell);
+}
+
+// give the buttons at the bottom functionality
+var submitmap = [];
+var count = 0;
+document.getElementById('clear').addEventListener('click', function(){
+  for(var i = 0; i < sidelength*sidelength; i++){
+    document.getElementById('cell' + i).classList.remove('colored');
+  }
+});
+document.getElementById('submit').addEventListener('click', function(){
+  submitmap = [];
+  for(var i = 0; i < sidelength; i++){
+    var rowmap = [];
+    for(var j = 0; j < sidelength; j++){
+      if(document.getElementById(('cell' + (i*sidelength + j))).classList.contains('colored')){
+        rowmap.push(1);
+      } else {
+        rowmap.push(0);
+      }
+    }
+    submitmap.push(rowmap);
+  }
+  for(var i = 0; i < sidelength*sidelength; i++){
+    document.getElementById('cell' + i).classList.remove('colored');
+  }
+  console.log(submitmap);
+});
+  </script>
+</html>
