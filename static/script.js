@@ -1,64 +1,3 @@
-<!DOCTYPE html>
-<html>
-<head>
-  <style>
-    
-    table, tr, td {
-      border: 1px solid black;
-    }
-    
-    td {
-      text-align: center;
-    }
-    
-    button {
-      
-    }
-    
-    #drawboard {
-      display: grid;
-      grid-template-columns: repeat(28, 20px);
-      padding: 20px;
-      width: max-content;
-      background-color: #691607;
-    }
-
-    .cell {
-      border: 1px solid black;
-      width: 20px;
-      height: 20px;
-      text-align: center;
-      margin: 0px;
-      background-color: white;
-      color: white;
-      text-align: right;
-    }
-
-    .colored {
-      background-color: black;
-    }
-  </style>
-</head>
-<body>
-  <table id='ui'>
-    <tr>
-      <td rowspan=2>
-        <div id='drawboard'></div>
-      </td>
-      <td id='textdisplay'>
-        Hello.<br>
-      </td>
-    </tr>
-    <tr>
-      <td>
-        <button id='clear'>Clear</button>
-        <button id='submit'>Submit</button>
-      </td>    
-      </tr>
-  </table>
-</body>
-  <script>
-
 // create the drawing board & give it functionality
 var sidelength = 28;
 var drawboard = document.getElementById('drawboard');
@@ -115,5 +54,3 @@ document.getElementById('submit').addEventListener('click', function(){
   }
   console.log(submitmap);
 });
-  </script>
-</html>
