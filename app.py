@@ -32,7 +32,7 @@ hiragana_dict = {
 
 # creating an instance of HGCNN
 model = HGCNN()
-model.load_state_dict(torch.load('param.pth')) # loads the model weights from model.pth
+# model.load_state_dict(torch.load('param.pth')) # loads the model weights from param.pth - not defined yet
 # model.eval() # only necessary when inferring, not training !!!
 lossfunc = nn.CrossEntropyLoss() # loss function for training, cross entropy loss
 optimizer = optim.SGD(model.parameters(), lr=0.01, momentum=0.9, weight_decay=0.0005) # optimizer for training, stochastic gradient descent
@@ -69,7 +69,7 @@ def predict():
     confidence, prediction = torch.max(probs, dim=1)
 
     # saving the model state and training data
-    torch.save(model.state_dict(), "param.pth")
+    # torch.save(model.state_dict(), "param.pth") - not defined yet
     with open("training_data.csv", "a") as f:
         flat = [str(px) for row in map for px in row]
         f.write(", ".join(flat + [str(label)]) + "\n")
