@@ -47,7 +47,11 @@ def load():
 def predict(): 
     data = request.get_json() # gets the data from the request
     map = data['map']
-    label = input_dict[data['label']] # converts user input to an integer label
+
+    # debugging
+    print("Raw map data:", type(data), data)
+
+    label = input_dict[data['label'].strip()] # converts user input to an integer label
     if not label in input_dict.values(): # checks if the label is valid
         return jsonify({
             'result': '',
@@ -58,6 +62,10 @@ def predict():
     y = torch.tensor([label], dtype=torch.long)
     
     maptensor = torch.tensor(map, dtype=torch.float32).unsqueeze(0).unsqueeze(0)
+
+    # debugging with render output
+    print("Received label:", label)
+    print("Input shape:", maptensor.shape)
 
     # with torch.no_grad(): # no need to track gradients for inference, necessary for training !!!
     output = model(maptensor) # runs the model on the input data
@@ -70,9 +78,9 @@ def predict():
 
     # saving the model state and training data
     # torch.save(model.state_dict(), "param.pth") - not defined yet
-    with open("training_data.csv", "a") as f:
-        flat = [str(px) for row in map for px in row]
-        f.write(", ".join(flat + [str(label)]) + "\n")
+    # with open("training_data.csv", "a") as f: - not defined yet
+    #    flat = [str(px) for row in map for px in row]
+    #    f.write(", ".join(flat + [str(label)]) + "\n")
 
     return jsonify({
         'result': hiragana_dict[prediction],
