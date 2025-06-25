@@ -54,7 +54,9 @@ document.getElementById('submit').addEventListener('click', function(){
   for(var i = 0; i < sidelength*sidelength; i++){
     document.getElementById('cell' + i).classList.remove('colored');
   }
-  
+
+  let label = prompt('What character did you draw? Please input the roumaji (e.g. "ka" for か):');
+
   document.getElementById('textdisplay').textContent = 'Analyzing...';
   fetch("/read", {
     method: "POST",
@@ -63,13 +65,9 @@ document.getElementById('submit').addEventListener('click', function(){
   })
   .then(response => response.json())
   .then(data => {
-    // ignore the first line it's for diagnostics
-    document.getElementById('cell47').style.backgroundColor = 'red';
-    document.getElementById('textdisplay').textContent = 'Your drawing had ' + data.result.toString() + ' pixels.';
+    document.getElementById('textdisplay').textContent = 'HiraganaReader thinks your drawing was most likely ' + data.result.toString() + ' with confidence ' + (data.confidence*100).toString() + '%';
   })
   .catch(error => {
-    // ignore the first line it's for diagnostics
-    document.getElementById('cell47').style.backgroundColor = 'blue';
     document.getElementById('textdisplay').textContent = 'An error occurred. Please try again.';
   })
 });
