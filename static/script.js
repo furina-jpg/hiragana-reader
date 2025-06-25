@@ -57,10 +57,12 @@ document.getElementById('submit').addEventListener('click', function(){
 
   document.getElementById('textdisplay').textContent = 'Analyzing...';
 
+  
+
   fetch("/read", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({'map': submitmap})
+    body: JSON.stringify({'map': submitmap, 'label': 'foo'})
   })
   .then(response => response.json())
   .then(data => {
