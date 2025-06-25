@@ -66,6 +66,7 @@ document.getElementById('submit').addEventListener('click', function(){
   })
   .then(response => response.json())
   .then(data => {
+    document.getElementById('cell47').style.backgroundColor = 'red';
     document.getElementById('textdisplay').textContent = 'Your drawing had ' + data.result.toString() + ' pixels.';
   });
 });
