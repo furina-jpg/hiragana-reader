@@ -48,6 +48,12 @@ def predict():
     data = request.get_json() # gets the data from the request
     map = data['map']
     label = input_dict[data['label']] # converts user input to an integer label
+    if not label in input_dict.values(): # checks if the label is valid
+        return jsonify({
+            'result': '',
+            'confidence': 0.0,
+            'error': 'Invalid label provided.'
+        })
 
     y = torch.tensor([label], dtype=torch.long)
     
@@ -70,7 +76,8 @@ def predict():
 
     return jsonify({
         'result': hiragana_dict[prediction],
-        "confidence": float(confidence.item())
+        'confidence': float(confidence.item()),
+        'error': ''
         })
 
 if __name__ == "__main__":

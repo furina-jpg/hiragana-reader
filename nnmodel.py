@@ -2,7 +2,7 @@ import torch.nn as nn, torch.nn.functional as func
 
 class HGCNN(nn.Module):
     def __init__(self):
-        super.__init__()
+        super().__init__()
         self.conv1 = nn.Conv2d(in_channels=1, out_channels=20, kernel_size=9, stride=1, padding=0) # 1 x 28 x 28 input layer to 20 feature maps, each producing 20 x 20 output
         self.conv2 = nn.Conv2d(in_channels=20, out_channels=48, kernel_size=5, stride=1, padding=0) # 20 x 10 x 10 input layer to 48 feature maps, each producing 6 x 6 output
         self.pool = nn.MaxPool2d(kernel_size=2, stride=2, padding=0) # max pooling layer, max of each 2x2 grid
