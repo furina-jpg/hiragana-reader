@@ -1,6 +1,6 @@
 from flask import Flask, request, jsonify, render_template
 from nnmodel import HGCNN, lossfunc, optimizer
-import torch, os, torch.nn.functional as func
+import torch, torch.nn as nn, torch.nn.functional as func, torch.optim as optim
 
 app = Flask(__name__) # initializes app
 
@@ -34,6 +34,8 @@ hiragana_dict = {
 model = HGCNN()
 model.load_state_dict(torch.load('param.pth')) # loads the model weights from model.pth
 # model.eval() # only necessary when inferring, not training !!!
+lossfunc = nn.CrossEntropyLoss() # loss function for training, cross entropy loss
+optimizer = optim.SGD(model.parameters(), lr=0.01, momentum=0.9, weight_decay=0.0005) # optimizer for training, stochastic gradient descent
 
 # loads the interface
 @app.route('/')
