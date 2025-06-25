@@ -9,14 +9,18 @@ def load(): # loads the interface
 
 @app.route('/read', methods=['POST']) # reading submitted pixel data
 def read_data(): 
-    data = request.get_json() # gets the data from the request
-    map = data['map']
+    try:
+        data = request.get_json() # gets the data from the request
+        map = data['map']
+        if not isinstance(map, list):
+            return jsonify({'result': 'Invalid data format, expected a list.'})
+        mapsum = numpy.sum(map) # temporary: flatten map into a sum
 
-    mapsum = numpy.sum(map) # temporary: flatten map into a sum
-
-    if map:
-        return jsonify({'result':mapsum}) # returns result
-    return jsonify({'result':'Error'}) # retunrs error if array fails to be read
+        if map:
+            return jsonify({'result':mapsum}) # returns result
+    except Exception as e:
+        return jsonify({'result': str(e)})
+    
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=10000) # runs the app on port 10000

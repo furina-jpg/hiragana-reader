@@ -4,7 +4,7 @@ var drawboard = document.getElementById('drawboard');
 var isDragging = false;
 drawboard.addEventListener('mousedown', function(){
   isDragging = true;
-});
+  });
 drawboard.addEventListener('mouseup', function(){
   isDragging = false;
 });
@@ -20,7 +20,7 @@ for(var i = 0; i < sidelength*sidelength; i++){
     if(isDragging){
     this.classList.add('colored');
   }});
-    cell.addEventListener('click', function(){
+  cell.addEventListener('click', function(){
     this.classList.add('colored');
   });
     
@@ -54,23 +54,22 @@ document.getElementById('submit').addEventListener('click', function(){
   for(var i = 0; i < sidelength*sidelength; i++){
     document.getElementById('cell' + i).classList.remove('colored');
   }
-
-  document.getElementById('textdisplay').textContent = 'Analyzing...';
-
   
-
+  document.getElementById('textdisplay').textContent = 'Analyzing...';
   fetch("/read", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({'map': submitmap, 'label': 'foo'})
   })
-  .then(res => res.json())
+  .then(response => response.json())
   .then(data => {
+    // ignore the first line it's for diagnostics
     document.getElementById('cell47').style.backgroundColor = 'red';
     document.getElementById('textdisplay').textContent = 'Your drawing had ' + data.result.toString() + ' pixels.';
   })
   .catch(error => {
+    // ignore the first line it's for diagnostics
     document.getElementById('cell47').style.backgroundColor = 'blue';
     document.getElementById('textdisplay').textContent = 'An error occurred. Please try again.';
-  });
+  })
 });
