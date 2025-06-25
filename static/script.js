@@ -28,14 +28,16 @@ for(var i = 0; i < sidelength*sidelength; i++){
   drawboard.appendChild(cell);
 }
 
-// give the buttons at the bottom functionality
-var submitmap = [];
-var count = 0;
+
+// clear the board
 document.getElementById('clear').addEventListener('click', function(){
   for(var i = 0; i < sidelength*sidelength; i++){
     document.getElementById('cell' + i).classList.remove('colored');
   }
 });
+
+// clear the board & submit pixel map as a nested array
+var submitmap = [];
 document.getElementById('submit').addEventListener('click', function(){
   submitmap = [];
   for(var i = 0; i < sidelength; i++){
@@ -52,5 +54,16 @@ document.getElementById('submit').addEventListener('click', function(){
   for(var i = 0; i < sidelength*sidelength; i++){
     document.getElementById('cell' + i).classList.remove('colored');
   }
-  console.log(submitmap);
+
+  document.getElementById('textdisplay').createTextNode('beforeend', 'Analyzing...');
+
+  fetch("/read", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({'map': submitmap})
+  })
+  .then(response => response.json())
+  .then(data => {
+    document.getElementById('textdisplay').textContent = 'Your drawing had ' + data.result + ' pixels.';
+  });
 });
