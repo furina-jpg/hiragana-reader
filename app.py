@@ -5,7 +5,7 @@ app = Flask(__name__) # initializes my code as an app
 
 @app.route('/')
 def load(): # loads the interface
-    return render_template('interface/interface.html')
+    return render_template('interface.html')
 
 @app.route('/read', methods=['POST']) # reading submitted pixel data
 def read(): 
