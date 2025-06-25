@@ -1,5 +1,5 @@
 from flask import Flask, request, jsonify, render_template
-from nnmodel import HGCNN, lossfunc, optimizer
+from nnmodel import HGCNN
 import torch, torch.nn as nn, torch.nn.functional as func, torch.optim as optim
 
 app = Flask(__name__) # initializes app
