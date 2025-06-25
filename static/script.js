@@ -64,9 +64,13 @@ document.getElementById('submit').addEventListener('click', function(){
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({'map': submitmap, 'label': 'foo'})
   })
-  .then(response => response.json())
+  .then(res => res.json())
   .then(data => {
     document.getElementById('cell47').style.backgroundColor = 'red';
     document.getElementById('textdisplay').textContent = 'Your drawing had ' + data.result.toString() + ' pixels.';
+  })
+  .catch(error => {
+    document.getElementById('cell47').style.backgroundColor = 'blue';
+    document.getElementById('textdisplay').textContent = 'An error occurred. Please try again.';
   });
 });
