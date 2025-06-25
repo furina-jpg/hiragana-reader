@@ -66,6 +66,6 @@ document.getElementById('submit').addEventListener('click', function(){
   })
   .then(response => response.json())
   .then(data => {
-    document.getElementById('textdisplay').textContent = 'Your drawing had ' + data.result + ' pixels.';
+    document.getElementById('textdisplay').textContent = 'Your drawing had ' + data.result.toString() + ' pixels.';
   });
 });
