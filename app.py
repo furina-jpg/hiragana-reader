@@ -12,10 +12,9 @@ def read():
     data = request.get_json() # gets the data from the request
     map = data['map']
 
-    # temporary: flatten map into a sum
-    mapsum = numpy.sum(map)
+    mapsum = numpy.sum(map) # temporary: flatten map into a sum
 
-    return jsonify({"result":mapsum})
+    return jsonify({"result":mapsum}) # returns result
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=10000) # runs the app on port 10000
