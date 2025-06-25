@@ -14,7 +14,7 @@ def read_data():
         map = data['map']
         if not isinstance(map, list):
             return jsonify({'result': 'Invalid data format, expected a list.'})
-        mapsum = numpy.sum(map) # temporary: flatten map into a sum
+        mapsum = int(numpy.sum(map)) # temporary: flatten map into a sum
 
         if map:
             return jsonify({'result':mapsum}) # returns result
