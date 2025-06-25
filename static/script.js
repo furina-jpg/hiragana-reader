@@ -55,7 +55,7 @@ document.getElementById('submit').addEventListener('click', function(){
     document.getElementById('cell' + i).classList.remove('colored');
   }
 
-  document.getElementById('textdisplay').createTextNode('beforeend', 'Analyzing...');
+  document.getElementById('textdisplay').textContent = 'Analyzing...';
 
   fetch("/read", {
     method: "POST",
