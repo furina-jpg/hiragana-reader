@@ -1,0 +1,76 @@
+// create the drawing board & give it functionality
+var sidelength = 28;
+var drawboard = document.getElementById('drawboard');
+var isDragging = false;
+drawboard.addEventListener('mousedown', function(){
+  isDragging = true;
+  });
+drawboard.addEventListener('mouseup', function(){
+  isDragging = false;
+});
+for(var i = 0; i < sidelength*sidelength; i++){
+  var cell = document.createElement('span');
+    
+  // classification
+  cell.classList.add('cell');
+  cell.id = 'cell' + i;
+    
+  // make it work smoothly
+  cell.addEventListener('mouseover', function(){
+    if(isDragging){
+    this.classList.add('colored');
+  }});
+  cell.addEventListener('click', function(){
+    this.classList.add('colored');
+  });
+    
+  // add to board
+  drawboard.appendChild(cell);
+}
+
+
+// clear the board
+document.getElementById('clear').addEventListener('click', function(){
+  for(var i = 0; i < sidelength*sidelength; i++){
+    document.getElementById('cell' + i).classList.remove('colored');
+  }
+});
+
+// clear the board & submit pixel map as a nested array
+var submitmap = [];
+document.getElementById('submit').addEventListener('click', function(){
+  submitmap = [];
+  for(var i = 0; i < sidelength; i++){
+    var rowmap = [];
+    for(var j = 0; j < sidelength; j++){
+      if(document.getElementById(('cell' + (i*sidelength + j))).classList.contains('colored')){
+        rowmap.push(1);
+      } else {
+        rowmap.push(0);
+      }
+    }
+    submitmap.push(rowmap);
+  }
+  // for(var i = 0; i < sidelength*sidelength; i++){document.getElementById('cell' + i).classList.remove('colored');}
+
+  // the below code was originally used when i was writing the training data
+  // let label = prompt('What character did you draw? Please input the roumaji (e.g. "ka" for か). Note that ふ is stored as hu, and inputting "fu" will return an error.');
+
+  document.getElementById('textdisplay').textContent = 'Analyzing...';
+  fetch("/read", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({'map': submitmap}) // , 'label': label. originally related to the above prompt line for labeling drawings
+  })
+  .then(response => response.json())
+  .then(data => {
+    if(!data.error) {
+      document.getElementById('textdisplay').textContent = 'I think you drew ' + data.result.toString() + '!\n(' + (data.confidence).toString() + '% confidence).';
+    } else {
+      document.getElementById('textdisplay').textContent = 'An error occured: ' + data.error + '. Please try again.';
+    }
+  })
+  .catch(error => {
+    document.getElementById('textdisplay').textContent = 'An error occurred: Please try again.';
+  })
+});
