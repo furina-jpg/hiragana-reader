@@ -1,10 +1,17 @@
+# hey! this is where the most learning happened for me; going into this project, i had no idea
+# how to connect my javascript to my python, let alone even use any of these packages. a lot of youtube,
+# reading docs, asking chatgpt, and banging my head on my computer later, we're here.
+
+# a lot of code is commneted out because it was originally used for writing the training data;
+# you're free to look around if you want
+
 from flask import Flask, request, jsonify, render_template
 from nnmodel import HGCNN
-import torch, torch.nn as nn, torch.nn.functional as func, torch.optim as optim
+import torch, torch.nn as nn, torch.nn.functional as func, torch.optim as optim, os
 
-app = Flask(__name__) # initializes app
+app = Flask(__name__) # initializes app?
 
-# creating the hiragana dictionaries for later
+# creating the input/output hiragana dictionaries for later
 input_dict = {
     'a': 0, 'i': 1, 'u': 2, 'e': 3, 'o': 4,
     'ka': 5, 'ki': 6, 'ku': 7, 'ke': 8, 'ko': 9,
@@ -32,61 +39,54 @@ hiragana_dict = {
 
 # creating an instance of HGCNN
 model = HGCNN()
-# model.load_state_dict(torch.load('param.pth')) # loads the model weights from param.pth - not defined yet
-# model.eval() # only necessary when inferring, not training !!!
-lossfunc = nn.CrossEntropyLoss() # loss function for training, cross entropy loss
-optimizer = optim.SGD(model.parameters(), lr=0.01, momentum=0.9, weight_decay=0.0005) # optimizer for training, stochastic gradient descent
+if os.path.exists('param.pth'):
+    model.load_state_dict(torch.load('param.pth')) # loads the model weights from param.pth
+model.eval() # necessary for inference, not training
+# model.train() # used for training, not inference. enables dropout and normalization
 
-# loads the interface
+# so this is how they load the html/css/js apparently
 @app.route('/')
 def load(): 
     return render_template('interface.html')
 
-# reading submitted pixel data
+# reading submitted pixel map
 @app.route('/read', methods=['POST']) 
 def predict(): 
     data = request.get_json() # gets the data from the request
     map = data['map']
 
-    # debugging
-    print("Raw map data:", type(data), data)
+    # the below was used for reading the labels
 
-    label = input_dict[data['label'].strip()] # converts user input to an integer label
-    if not label in input_dict.values(): # checks if the label is valid
-        return jsonify({
-            'result': '',
-            'confidence': 0.0,
-            'error': 'Invalid label provided.'
-        })
+    # label = input_dict[data['label'].strip()] 
+    # if not label in input_dict.values(): # checks if the label is valid
+    #    return jsonify({
+    #        'result': 'n/a',
+    #        'confidence': 0.00,
+    #        'error': 'Invalid label provided.'
+    #    })
 
-    y = torch.tensor([label], dtype=torch.long)
-    
-    maptensor = torch.tensor(map, dtype=torch.float32).unsqueeze(0).unsqueeze(0)
+    maptensor = torch.tensor(map, dtype=torch.float32).unsqueeze(0).unsqueeze(0) # converts map to a pytorch-readable tensor
 
-    # debugging with render output
-    print("Received label:", label)
-    print("Input shape:", maptensor.shape)
+    with torch.no_grad(): # stops computer from calculating gradients since backprop isn't happening during inference, saves memory. enabled for inference, not for training
+        output = model(maptensor) # runs my neural network on the input data
+        confidence, prediction = torch.max(func.softmax(output, dim=1), dim=1) # converts output activations to probabilities & thus confidences
+    # note that the above values are tensors & need to be converted to native python ints to be operated on
+    # this is done with <thingy>.item()
 
-    # with torch.no_grad(): # no need to track gradients for inference, necessary for training !!!
-    output = model(maptensor) # runs the model on the input data
-    loss = lossfunc(output, y)
-    optimizer.zero_grad() # zeroes the gradients before backpropagation
-    loss.backward() # backpropagates the loss
-    optimizer.step() # updates the model weights
-    probs = func.softmax(output, dim=1)  # convert output activations to probabilities
-    confidence, prediction = torch.max(probs, dim=1)
+    # the below was used for writing my maps & labels to a .csv file for training
+    # there was originally a line for saving the state of the model, but i turned it off because
+    # i was writing certain characters more than others and that was creating issues (esp since i was using SGD)
 
-    # saving the model state and training data
-    # torch.save(model.state_dict(), "param.pth") - not defined yet
-    # with open("training_data.csv", "a") as f: - not defined yet
-    #    flat = [str(px) for row in map for px in row]
-    #    f.write(", ".join(flat + [str(label)]) + "\n")
+    # saving the model state, loss, & training data
+    # with open("training_data.csv", "a") as f:
+    #     flat = [str(px) for row in map for px in row]
+    #     f.write(", ".join(flat + [str(label)]) + "\n")
 
     return jsonify({
-        'result': hiragana_dict[prediction],
-        'confidence': float(confidence.item()),
+        'result': hiragana_dict[prediction.item()],
+        'confidence': round(confidence.item()*100, 2),
         'error': ''
-        })
+        }) # sends back the result, a confidence as a percentage, and no error
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=10000) # runs the app on port 10000
+    app.run(host="0.0.0.0", port=10000) # runs the app on port 10000 or something

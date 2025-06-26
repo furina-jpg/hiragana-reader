@@ -51,23 +51,26 @@ document.getElementById('submit').addEventListener('click', function(){
     }
     submitmap.push(rowmap);
   }
-  for(var i = 0; i < sidelength*sidelength; i++){
-    document.getElementById('cell' + i).classList.remove('colored');
-  }
+  // for(var i = 0; i < sidelength*sidelength; i++){document.getElementById('cell' + i).classList.remove('colored');}
 
-  let label = prompt('What character did you draw? Please input the roumaji (e.g. "ka" for か):');
+  // the below code was originally used when i was writing the training data
+  // let label = prompt('What character did you draw? Please input the roumaji (e.g. "ka" for か). Note that ふ is stored as hu, and inputting "fu" will return an error.');
 
   document.getElementById('textdisplay').textContent = 'Analyzing...';
   fetch("/read", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({'map': submitmap, 'label': label})
+    body: JSON.stringify({'map': submitmap}) // , 'label': label. originally related to the above prompt line for labeling drawings
   })
   .then(response => response.json())
   .then(data => {
-    document.getElementById('textdisplay').textContent = 'HiraganaReader thinks your drawing was most likely ' + data.result.toString() + ' with confidence ' + (data.confidence*100).toString() + '%';
+    if(!data.error) {
+      document.getElementById('textdisplay').textContent = 'I think you drew ' + data.result.toString() + '!\n(' + (data.confidence).toString() + '% confidence).';
+    } else {
+      document.getElementById('textdisplay').textContent = 'An error occured: ' + data.error + '. Please try again.';
+    }
   })
   .catch(error => {
-    document.getElementById('textdisplay').textContent = 'An error occurred. Please try again.';
+    document.getElementById('textdisplay').textContent = 'An error occurred: Please try again.';
   })
 });

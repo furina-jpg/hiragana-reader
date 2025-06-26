@@ -1,3 +1,5 @@
 flask
-numpy
 torch
+torch.nn
+torch.nn.functional
+torch.optim

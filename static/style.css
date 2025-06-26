@@ -1,34 +1,57 @@
-    table, tr, td {
-      border: 1px solid black;
-    }
-    
-    td {
-      text-align: center;
-    }
-    
-    button {
-      border: 1px solid black;
-    }
-    
-    #drawboard {
-      display: grid;
-      grid-template-columns: repeat(28, 20px);
-      padding: 20px;
-      width: max-content;
-      background-color: #691607;
-    }
+html, body {
+  font-family: 'Noto Serif JP', serif;
+  background: linear-gradient(#fffefc, #ffe4e1);
+  overflow: hidden;
+  height: 100%;
+  margin: 0;
+}
 
-    .cell {
-      border: 1px solid black;
-      width: 20px;
-      height: 20px;
-      text-align: center;
-      margin: 0px;
-      background-color: white;
-      color: white;
-      text-align: right;
-    }
+table, tr, td {
+  margin: 28px auto;
+  border: none;
+  text-align: center;
+}
+    
+button {
+  font-family: 'Noto Serif JP', serif;
+  margin: 5px;
+  padding: 12px 16px;
+  font-size: 12px;
+  border-radius: 8px;
+  border: none;
+  background-color: #b22222;
+  color: white;
+  cursor: pointer;
+}
 
-    .colored {
-      background-color: black;
-    }
+button:hover {
+  background-color: #8b0000;
+}
+
+#drawboard {
+  display: grid;
+  grid-template-columns: repeat(28, 18px);
+  padding: 24px;
+  width: max-content;
+  background-color: #8f4b2c;
+  border: 2px solid #965435;
+}
+
+#textdisplay {
+  white-space: pre-line;
+  font-size: 16px;
+  width: 240px;
+}
+
+
+.cell {
+  border: 1px solid #777;
+  width: 18px;
+  height: 18px;
+  margin: 0px;
+  background-color: #fffaf0;
+}
+
+.colored {
+  background-color: black;
+}
