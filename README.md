@@ -5,3 +5,4 @@ i'm excited! i don't really know anything about how any of this works yet, but i
 
 --
 
+since i wasn't able to get this program hosted on a server or anything, it just runs on localhost port 10000
